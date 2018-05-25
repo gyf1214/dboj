@@ -1,0 +1,152 @@
+package model
+
+import (
+	"crypto/md5"
+	"crypto/rand"
+	"database/sql"
+	"fmt"
+	"io"
+	"time"
+
+	"github.com/gyf1214/dboj/util"
+)
+
+const (
+	salt1 = "807dbeb2318b7ba9343158b6a6e1b50d"
+)
+
+// UserInfo is user information returned
+type UserInfo struct {
+	Name    string
+	GroupID int
+	Group   string
+}
+
+func random() (string, error) {
+	b := make([]byte, 16)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%x", b), nil
+}
+
+func hash(a string) string {
+	h := md5.New()
+	io.WriteString(h, a)
+	io.WriteString(h, salt1)
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+// Login process user login
+func Login(name, passwd string) (string, error) {
+	passwd = hash(passwd)
+
+	var uid int
+	q := "select `id` from `user` where `name` = ? and `passwd` = ?;"
+	err := db.QueryRow(q, name, passwd).Scan(&uid)
+	if err != nil {
+		return "", err
+	}
+
+	sid, err := random()
+	if err != nil {
+		return "", err
+	}
+	q = "update `user` set `session` = ?, `activity` = now() where `id` = ?;"
+	_, err = db.Exec(q, sid, uid)
+	if err != nil {
+		return "", err
+	}
+
+	return sid, nil
+}
+
+// Authenticate process session authenticate
+func Authenticate(sid string) (int, error) {
+	var (
+		uid int
+		act time.Time
+	)
+
+	q := "select `id`, `activity` from `user` where `session` = ?;"
+	err := db.QueryRow(q, sid).Scan(&uid, &act)
+	if err == sql.ErrNoRows {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+
+	dur := time.Now().Sub(act)
+	if dur > util.SessionExpire {
+		return 0, nil
+	}
+
+	q = "update `user` set `activity` = now() where `id` = ?;"
+	_, err = db.Exec(q, uid)
+	if err != nil {
+		return 0, err
+	}
+
+	return uid, nil
+}
+
+// GetUserInfo returns user information
+func GetUserInfo(uid int) (UserInfo, error) {
+	var (
+		ret   UserInfo
+		gid   sql.NullInt64
+		gname sql.NullString
+	)
+	q := "select `user`.`name`, `group`.`id`, `group`.`name` from `user` left join `group` on `user`.`group` = `group`.`id` where `user`.`id` = ?;"
+	err := db.QueryRow(q, uid).Scan(&ret.Name, &gid, &gname)
+	if err != nil {
+		return UserInfo{}, err
+	}
+
+	if gid.Valid {
+		ret.GroupID = int(gid.Int64)
+		ret.Group = gname.String
+	}
+	return ret, nil
+}
+
+// UpdateUserGroup changes the group of user
+func UpdateUserGroup(uid, gid int) error {
+	q := "update `user` set `group` = ? where `id` = ?;"
+	_, err := db.Exec(q, gid, uid)
+
+	return err
+}
+
+// Register deals with new user
+func Register(name, passwd string) (int, string, error) {
+	passwd = hash(passwd)
+	sid, err := random()
+	if err != nil {
+		return 0, "", err
+	}
+
+	q := "insert into `user` (`name`, `passwd`, `session`, `activity`) values (?, ?, ?, now());"
+	_, err = db.Exec(q, name, passwd, sid)
+	if err != nil {
+		return 0, "", err
+	}
+
+	var uid int
+	q = "select `id` from `user` where `name` = ?;"
+	err = db.QueryRow(q, name).Scan(&uid)
+	if err != nil {
+		return 0, "", err
+	}
+
+	return uid, sid, nil
+}
+
+// Logout clears the session
+func Logout(sid string) error {
+	q := "update `user` set `session` = null where `session` = ?;"
+	_, err := db.Exec(q, sid)
+	return err
+}

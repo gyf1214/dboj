@@ -1,0 +1,23 @@
+{{ define "content" }}
+
+<style>
+form {
+  max-width: 330px;
+  margin: 150px auto;
+}
+</style>
+
+<form method="post" action="{{ .post }}" enctype="multipart/form-data">
+  <h2 class="text-center">{{ .title }}</h2>
+  <div class="form-group">
+    <label for="name" class="bmd-label-floating">Name</label>
+    <input type="text" class="form-control" name="name">
+  </div>
+  <div class="form-group">
+    <label for="name" class="bmd-label-floating">Password</label>
+    <input type="password" class="form-control" name="passwd">
+  </div>
+  <button type="submit" class="mt-4 btn btn-block btn-primary btn-lg">SIGN IN</button>
+</form>
+
+{{ end }}
