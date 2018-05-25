@@ -10,23 +10,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const (
-	cacheMem = 32 << 20
-	sidName  = "dboj-session"
-)
-
 var (
 	errParse = errors.New("parse form error")
 	router   = mux.NewRouter()
 )
 
+// Redirect is a panic for redirect
+type Redirect struct {
+	URL  string
+	Code int
+}
+
 // ParseForm parse values from POST request
 func ParseForm(r *http.Request, params ...interface{}) error {
-	err := r.ParseMultipartForm(cacheMem)
-	if err != nil {
-		return err
-	}
+	r.ParseMultipartForm(CacheMem)
 
+	var err error
 	for i := 0; i < len(params); i += 2 {
 		key, ok := params[i].(string)
 		if !ok {
@@ -60,7 +59,14 @@ func SafeHandle(path string, f func(http.ResponseWriter, *http.Request)) *mux.Ro
 	return router.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if p := recover(); p != nil {
-				http.Error(w, fmt.Sprint(p), 400)
+				switch q := p.(type) {
+				case error:
+					http.Error(w, q.Error(), 400)
+				case Redirect:
+					http.Redirect(w, r, q.URL, q.Code)
+				default:
+					http.Error(w, fmt.Sprint(p), 500)
+				}
 			}
 		}()
 		f(w, r)
@@ -82,7 +88,7 @@ func ListenAndServe(addr string) {
 
 // GetSession gets sid from cookie
 func GetSession(r *http.Request) string {
-	cookie, err := r.Cookie(sidName)
+	cookie, err := r.Cookie(SidName)
 	if err != nil {
 		return ""
 	}
@@ -91,5 +97,5 @@ func GetSession(r *http.Request) string {
 
 // SetSession sets sid via cookie
 func SetSession(w http.ResponseWriter, sid string) {
-	http.SetCookie(w, &http.Cookie{Name: sidName, Value: sid})
+	http.SetCookie(w, &http.Cookie{Name: SidName, Value: sid})
 }

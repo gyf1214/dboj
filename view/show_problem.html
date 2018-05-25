@@ -1,0 +1,21 @@
+{{ define "content" }}
+
+<div class="container pt-5 pb-4 pl-5 pr-5">
+  <div class="row mb-5 justify-content-between">
+    <div class="col-auto">
+      <h2>{{ .problem.Title }}</h2>
+    </div>
+    <div class="col-auto">
+      {{ if .edit }}
+      <a role="button" href="/problem/edit?id={{ .pid }}" class="mr-2 btn btn-outline-primary">EDIT</a>
+      <a role="button" href="/problem/delete?id={{ .pid }}" class="mr-2 btn btn-outline-danger">DELETE</a>
+      {{ end }}
+      <a role="button" href="/submit?id={{ .pid }}" class="btn btn-outline-primary">SUBMIT</a>
+    </div>
+  </div>
+  <div class="row">
+  <pre class="col-12">{{.problem.Desc }}</pre>
+  </div>
+</div>
+
+{{ end }}

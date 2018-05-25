@@ -50,6 +50,9 @@ func ServeStatic() {
 
 // templates
 var (
-	Index = parseTemplate("index.html")
-	Login = parseTemplate("login.html")
+	Index       = parseTemplate("index.html")
+	Login       = parseTemplate("login.html")
+	ShowProblem = parseTemplate("show_problem.html")
+	EditProblem = parseTemplate("edit_problem.html")
+	Dataset     = parseTemplate("dataset.html")
 )

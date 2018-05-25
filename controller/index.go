@@ -8,17 +8,15 @@ import (
 	"github.com/gyf1214/dboj/view"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
-	uid, err := model.Authenticate(util.GetSession(r))
-	util.Ensure(err)
+func redirect(url string) {
+	panic(util.Redirect{URL: url, Code: util.RedirectCode})
+}
 
-	if uid == 0 {
-		http.Redirect(w, r, "/login", 302)
-	} else {
-		user, err := model.GetUserInfo(uid)
-		util.Ensure(err)
-		util.Ensure(view.Index(w, user))
-	}
+func index(w http.ResponseWriter, r *http.Request) {
+	uid := checkUser(r, 0)
+	user, err := model.GetUserInfo(uid)
+	util.Ensure(err)
+	util.Ensure(view.Index(w, user))
 }
 
 func init() {

@@ -11,12 +11,9 @@ import (
 	"github.com/gyf1214/dboj/util"
 )
 
-const (
-	salt1 = "807dbeb2318b7ba9343158b6a6e1b50d"
-)
-
 // UserInfo is user information returned
 type UserInfo struct {
+	ID      int
 	Name    string
 	GroupID int
 	Group   string
@@ -34,7 +31,7 @@ func random() (string, error) {
 func hash(a string) string {
 	h := md5.New()
 	io.WriteString(h, a)
-	io.WriteString(h, salt1)
+	io.WriteString(h, util.Salt1)
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
@@ -99,8 +96,8 @@ func GetUserInfo(uid int) (UserInfo, error) {
 		gid   sql.NullInt64
 		gname sql.NullString
 	)
-	q := "select `user`.`name`, `group`.`id`, `group`.`name` from `user` left join `group` on `user`.`group` = `group`.`id` where `user`.`id` = ?;"
-	err := db.QueryRow(q, uid).Scan(&ret.Name, &gid, &gname)
+	q := "select `user`.`id`, `user`.`name`, `group`.`id`, `group`.`name` from `user` left join `group` on `user`.`group` = `group`.`id` where `user`.`id` = ?;"
+	err := db.QueryRow(q, uid).Scan(&ret.ID, &ret.Name, &gid, &gname)
 	if err != nil {
 		return UserInfo{}, err
 	}
@@ -129,19 +126,17 @@ func Register(name, passwd string) (int, string, error) {
 	}
 
 	q := "insert into `user` (`name`, `passwd`, `session`, `activity`) values (?, ?, ?, now());"
-	_, err = db.Exec(q, name, passwd, sid)
+	res, err := db.Exec(q, name, passwd, sid)
 	if err != nil {
 		return 0, "", err
 	}
 
-	var uid int
-	q = "select `id` from `user` where `name` = ?;"
-	err = db.QueryRow(q, name).Scan(&uid)
+	uid, err := res.LastInsertId()
 	if err != nil {
 		return 0, "", err
 	}
 
-	return uid, sid, nil
+	return int(uid), sid, nil
 }
 
 // Logout clears the session

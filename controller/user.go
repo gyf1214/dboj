@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gyf1214/dboj/model"
@@ -26,7 +27,7 @@ func doRegister(w http.ResponseWriter, r *http.Request) {
 	util.Ensure(err)
 	util.SetSession(w, sid)
 
-	http.Redirect(w, r, "/", 302)
+	redirect("/")
 }
 
 func doLogin(w http.ResponseWriter, r *http.Request) {
@@ -37,13 +38,25 @@ func doLogin(w http.ResponseWriter, r *http.Request) {
 	util.Ensure(err)
 	util.SetSession(w, sid)
 
-	http.Redirect(w, r, "/", 302)
+	redirect("/")
 }
 
 func doLogout(w http.ResponseWriter, r *http.Request) {
 	util.Ensure(model.Logout(util.GetSession(r)))
 
-	http.Redirect(w, r, "/login", 302)
+	redirect("/login")
+}
+
+func checkUser(r *http.Request, uid int) int {
+	id, err := model.Authenticate(util.GetSession(r))
+	util.Ensure(err)
+	if id == 0 {
+		redirect("/login")
+	}
+	if uid != 0 && id != uid {
+		panic(errors.New("forbidden"))
+	}
+	return id
 }
 
 func init() {

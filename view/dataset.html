@@ -1,0 +1,29 @@
+{{ define "content" }}
+
+<form class="container pt-5 pb-4 pl-5 pr-5" method="post" action="/problem/dataset?id={{ .pid }}" enctype="multipart/form-data">
+  <div class="row justify-content-between">
+    <div class="col-8">
+      <h2>Upload Dataset</h2>
+    </div>
+    <div class="col-auto">
+      <a role="button" href="/problem/edit?id={{ .pid }}" class="mr-2 btn btn-outline-primary">BACK</a>
+      <button type="submit" class="btn btn-outline-primary">SAVE</button>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="input" class="bmd-label-floating">Score</label>
+    <input type="text" class="form-control" name="score" />
+  </div>
+  <div class="row">
+    <div class="col-6"><div class="form-group">
+      <label for="input" class="bmd-label-floating">Input</label>
+      <textarea class="form-control" name="input" rows="20"></textarea>
+    </div></div>
+    <div class="col-6"><div class="form-group">
+      <label for="answer" class="bmd-label-floating">Answer</label>
+      <textarea class="form-control" name="answer" rows="20"></textarea>
+    </div></div>
+  </div>
+</form>
+
+{{ end }}

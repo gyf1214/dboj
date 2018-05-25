@@ -8,9 +8,7 @@ import (
 	"github.com/gyf1214/dboj/util"
 )
 
-var (
-	db *sql.DB
-)
+var db *sql.DB
 
 func init() {
 	var err error
