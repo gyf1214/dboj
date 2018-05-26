@@ -49,11 +49,11 @@ func GetSubmitInfo(id int) (SubmitInfo, error) {
 	return ret, err
 }
 
-func CountSubmit(uid int, pid int) (int, error) {
-	var ret int
-	q := "select count(`id`) from `submition_all` where (`user` = ? or 0 = ?) and (`problem` = ? or 0 = ?);"
-	err := db.QueryRow(q, uid, uid, pid, pid).Scan(&ret)
-	return ret, err
+func CountSubmit(uid, pid int) (int, int, error) {
+	var ret, ac int
+	q := "select count(`id`), coalesce(sum(`accepted`), 0) from `submition_all` where (`user` = ? or 0 = ?) and (`problem` = ? or 0 = ?);"
+	err := db.QueryRow(q, uid, uid, pid, pid).Scan(&ret, &ac)
+	return ret, ac, err
 }
 
 func ListSubmit(uid int, pid int, page int) ([]SubmitInfo, error) {

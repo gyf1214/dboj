@@ -28,7 +28,7 @@
         {{ range $idx, $p := .submits }}
         <tr>
           <th class="text-center" scope="row"><a href="/submit?id={{$p.ID}}">{{$p.ID}}</a></th>
-          <th scope="row"><a href="/submit?id={{$p.Problem.ID}}">{{$p.Problem.Title}}</a></th>
+          <th><a href="/problem?id={{$p.Problem.ID}}">{{$p.Problem.Title}}</a></th>
           <td class="text-center">{{$p.Language}}</td>
           <td class="text-center">{{$p.Score}}</td>
         </tr>

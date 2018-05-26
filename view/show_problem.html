@@ -7,17 +7,38 @@
     </div>
     <div class="col-auto">
       {{ if .edit }}
-      <a role="button" href="/problem/edit?id={{ .pid }}" class="mr-2 btn btn-outline-primary">EDIT</a>
+      <a role="button" href="/problem/edit?id={{ .problem.ID }}" class="mr-2 btn btn-outline-primary">EDIT</a>
       <a role="button" href="/problem/dataset?id={{ .problem.ID }}" class="mr-2 btn btn-outline-primary">UPLOAD</a>
-      <a role="button" href="/problem/delete?id={{ .pid }}" class="mr-2 btn btn-outline-danger">DELETE</a>
+      <a role="button" href="/problem/delete?id={{ .problem.ID }}" class="mr-2 btn btn-outline-danger">DELETE</a>
       {{ end }}
-      <a role="button" href="/submit/create?id={{ .pid }}" class="btn btn-outline-primary">SUBMIT</a>
+      <a role="button" href="/submit/create?id={{ .problem.ID }}" class="btn btn-outline-primary">SUBMIT</a>
     </div>
   </div>
   <div class="row">
   <pre class="col-8 pr-4">{{.problem.Desc }}</pre>
   <div class="col-4 pl-5">
-    <h4>History</h4>
+    <div class="row mb-4 justify-content-between">
+      <div class="col-auto"><h6>Owner</h6></div>
+      <div class="col-auto pr-4"><h6>
+        <a href="/profile?id={{.problem.Owner.ID}}">{{.problem.Owner.Name}}</a>
+      </h6></div>
+    </div>
+    <div class="row mb-4 justify-content-between">
+      <div class="col-auto"><h6>All Submitions</h6></div>
+      <div class="col-auto pr-4"><h6>
+        {{.problem.Accepts}}
+        /
+        {{.problem.Submits}}
+      </h6></div>
+    </div>
+    <div class="row mb-4 justify-content-between">
+      <div class="col-auto"><h6>My Submitions</h6></div>
+      <div class="col-auto pr-4"><h6>
+        {{.ac}}
+        /
+        {{.count}}
+      </h6></div>
+    </div>
     <table class="table border-bottom mb-0">
       <thead>
         <tr>
@@ -40,7 +61,7 @@
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
       {{ if ge .page.ll 0 }}
       <div class="btn-group" role="group">
-        <a role="button" href="?id={{ .pid }}&page={{ .page.ll }}" class="btn btn-secondary"><</a>
+        <a role="button" href="?id={{ .problem.ID }}&page={{ .page.ll }}" class="btn btn-secondary"><</a>
       </div>
       {{ end }}
       <div class="btn-group ml-2 mr-2" role="group" aria-label="Second group">
@@ -48,15 +69,15 @@
         {{ $root := . }}
         {{ range $dummy, $p := $page.pages }}
           {{ if eq $page.cur $p }}
-          <a role="button" href="?id={{ $root.pid }}&page={{ $p }}" class="btn btn-secondary active">{{ $p }}</a>
+          <a role="button" href="?id={{ $root.problem.ID }}&page={{ $p }}" class="btn btn-secondary active">{{ $p }}</a>
           {{ else }}
-          <a role="button" href="?id={{ $root.pid }}&page={{ $p }}" class="btn btn-secondary">{{ $p }}</a>
+          <a role="button" href="?id={{ $root.problem.ID }}&page={{ $p }}" class="btn btn-secondary">{{ $p }}</a>
           {{ end }}
         {{ end }}
       </div>
       {{ if ge .page.rr 0 }}
       <div class="btn-group" role="group">
-        <a role="button" href="?id={{ .pid }}&page={{ .page.rr }}" class="btn btn-secondary">></a>
+        <a role="button" href="?id={{ .problem.ID }}&page={{ .page.rr }}" class="btn btn-secondary">></a>
       </div>
       {{ end }}
     </div>

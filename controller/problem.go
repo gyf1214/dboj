@@ -19,7 +19,7 @@ func showProblem(w http.ResponseWriter, r *http.Request) {
 
 	page := 0
 	util.ParseForm(r, "page", &page)
-	count, err := model.CountSubmit(uid, pid)
+	count, ac, err := model.CountSubmit(uid, pid)
 	util.Ensure(err)
 	pages := paginize(page, count)
 	list, err := model.ListSubmit(uid, pid, page)
@@ -28,9 +28,9 @@ func showProblem(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
 		"problem": info,
 		"edit":    uid == info.Owner.ID,
-		"pid":     pid,
 		"submits": list,
-		"page":    pages,
+		"count":   count, "ac": ac,
+		"page": pages,
 	}
 
 	util.Ensure(view.ShowProblem(w, data))
@@ -44,11 +44,11 @@ func createProblem(w http.ResponseWriter, r *http.Request) {
 }
 
 func doCreateProblem(w http.ResponseWriter, r *http.Request) {
-	var title, desc string
-	util.Ensure(util.ParseForm(r, "title", &title, "desc", &desc))
-	uid := checkUser(r, 0)
+	var info model.ProblemInfo
+	util.Ensure(util.ParseForm(r, "title", &info.Title, "desc", &info.Desc))
+	info.Owner.ID = checkUser(r, 0)
 
-	pid, err := model.CreateProblem(uid, title, desc)
+	pid, err := model.CreateProblem(info)
 	util.Ensure(err)
 
 	redirect(fmt.Sprintf("/problem?id=%v", pid))

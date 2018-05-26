@@ -120,7 +120,7 @@ create view `submition_all` as
 create view `problem_all` as
     select `problem`.`id`, `problem`.`owner`, `user`.`name`, `problem`.`title`,
         `problem`.`description`, count(`submition_all`.`id`) as `submits`,
-        sum(`submition_all`.`accepted`) as `accepts`
+        coalesce(sum(`submition_all`.`accepted`), 0) as `accepts`
     from `problem`
         left join `user` on `problem`.`owner` = `user`.`id`
         left join `submition_all` on `problem`.`id` = `submition_all`.`problem`

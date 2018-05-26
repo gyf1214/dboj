@@ -56,7 +56,7 @@ func profile(w http.ResponseWriter, r *http.Request) {
 
 	page := 0
 	util.ParseForm(r, "page", &page)
-	count, err := model.CountSubmit(uid, 0)
+	count, ac, err := model.CountSubmit(uid, 0)
 	util.Ensure(err)
 	pages := paginize(page, count)
 	list, err := model.ListSubmit(uid, 0, page)
@@ -66,7 +66,8 @@ func profile(w http.ResponseWriter, r *http.Request) {
 		"self":    uid == mid,
 		"user":    user,
 		"submits": list,
-		"page":    pages,
+		"count":   count, "ac": ac,
+		"page": pages,
 	}
 	util.Ensure(view.Profile(w, data))
 }

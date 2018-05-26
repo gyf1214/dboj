@@ -4,10 +4,12 @@ import "github.com/gyf1214/dboj/util"
 
 // ProblemInfo stores problem information
 type ProblemInfo struct {
-	ID    int
-	Owner UserInfo
-	Title string
-	Desc  string
+	ID      int
+	Owner   UserInfo
+	Title   string
+	Desc    string
+	Submits int
+	Accepts int
 }
 
 // DatasetInfo stores dataset information
@@ -19,9 +21,9 @@ type DatasetInfo struct {
 }
 
 // CreateProblem inserts a problem
-func CreateProblem(uid int, title, desc string) (int, error) {
+func CreateProblem(info ProblemInfo) (int, error) {
 	q := "insert into `problem` (`owner`, `title`, `description`) values (?, ?, ?);"
-	res, err := db.Exec(q, uid, title, desc)
+	res, err := db.Exec(q, info.Owner.ID, info.Title, info.Desc)
 	if err != nil {
 		return 0, err
 	}
@@ -43,7 +45,7 @@ func CountProblem(uid int) (int, error) {
 
 // ListProblem list problems, only returns id & title
 func ListProblem(page, uid int) ([]ProblemInfo, error) {
-	q := "select `problem`.`id`, `problem`.`title`, `user`.`id`, `user`.`name` from `problem` left join `user` on `problem`.`owner` = `user`.`id` where ? = 0 or ? = `problem`.`owner` order by `problem`.`id` asc limit ? offset ?;"
+	q := "select `id`, `title`, `owner`, `name`, `submits`, `accepts` from `problem_all` where 0 = ? or `owner` = ? order by `id` asc limit ? offset ?;"
 	rows, err := db.Query(q, uid, uid, util.PageSize, util.PageSize*page)
 	if err != nil {
 		return nil, err
@@ -53,7 +55,7 @@ func ListProblem(page, uid int) ([]ProblemInfo, error) {
 	defer rows.Close()
 	for rows.Next() {
 		prob := ProblemInfo{}
-		err := rows.Scan(&prob.ID, &prob.Title, &prob.Owner.ID, &prob.Owner.Name)
+		err := rows.Scan(&prob.ID, &prob.Title, &prob.Owner.ID, &prob.Owner.Name, &prob.Submits, &prob.Accepts)
 		if err != nil {
 			return nil, err
 		}
@@ -65,8 +67,8 @@ func ListProblem(page, uid int) ([]ProblemInfo, error) {
 // GetProblemInfo returns problem information
 func GetProblemInfo(pid int) (ProblemInfo, error) {
 	var ret ProblemInfo
-	q := "select `problem`.`id`, `problem`.`title`, `problem`.`description`, `user`.`id`, `user`.`name` from `problem` left join `user` on `problem`.owner = `user`.id where `problem`.`id` = ?;"
-	err := db.QueryRow(q, pid).Scan(&ret.ID, &ret.Title, &ret.Desc, &ret.Owner.ID, &ret.Owner.Name)
+	q := "select `id`, `title`, `description`, `owner`, `name`, `submits`, `accepts` from `problem_all` where `id` = ?;"
+	err := db.QueryRow(q, pid).Scan(&ret.ID, &ret.Title, &ret.Desc, &ret.Owner.ID, &ret.Owner.Name, &ret.Submits, &ret.Accepts)
 	return ret, err
 }
 

@@ -11,8 +11,8 @@
       <th class="text-center" scope="col">#</th>
       <th scope="col">Title</th>
       <th class="text-center" scope="col">Owner</th>
-      <th class="text-center" scope="col">Submition</th>
-      <th class="text-center" scope="col">% AC</th>
+      <th class="text-center" scope="col">Submitions</th>
+      <th class="text-center" scope="col">Accepts</th>
     </tr>
   </thead>
   <tbody>
@@ -20,9 +20,9 @@
     <tr>
       <th class="text-center" scope="row">{{$p.ID}}</th>
       <td><a href="/problem?id={{$p.ID}}">{{$p.Title}}</a></td>
-      <td class="text-center"><a href="/profile?id={{$p.Owner}}">{{$p.Owner.Name}}</a></td>
-      <td class="text-center">123</td>
-      <td class="text-center">100</td>
+      <td class="text-center"><a href="/profile?id={{$p.Owner.ID}}">{{$p.Owner.Name}}</a></td>
+      <td class="text-center">{{$p.Submits}}</td>
+      <td class="text-center">{{$p.Accepts}}</td>
     </tr>
     {{ end }}
   </tbody>
