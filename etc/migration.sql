@@ -139,3 +139,17 @@ create trigger `submit_evaluation` after insert on `submition` for each row
     insert into `evaluation` (`submition`, `dataset`, `status`, `message`)
     select NEW.`id`, `dataset`.`id`, 0, '' from `dataset`
     where `dataset`.`problem` = NEW.`problem`;
+
+
+-- create sample judge
+insert into `judge` (`name`, `language`, `address`) values
+    ('YAJG-0', 'C', '1.2.3.4'),
+    ('YAJG-1', 'C', '1.2.3.5'),
+    ('YAJG-2', 'C', '1.2.3.6'),
+    ('YAJG-3', 'C', '1.2.3.7'),
+    ('YAJG-0', 'C++', '1.2.3.4'),
+    ('YAJG-1', 'C++', '1.2.3.5'),
+    ('YAJG-2', 'C++', '1.2.3.6'),
+    ('YAJG-3', 'C++', '1.2.3.7'),
+    ('Chinese Tea', 'Golang', '5.6.7.8'),
+    ('Touhou Cookie', 'Golang', '5.6.7.9');
