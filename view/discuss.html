@@ -1,0 +1,57 @@
+{{ define "content" }}
+<div class="container pt-5 pb-4 pl-5 pr-5">
+        <div class="row mb-4 justify-content-between">
+        <div class="col-auto">
+            <h2>Discuss</h2>
+        </div>
+        </div>
+    
+    <table class="table table-striped border-bottom mb-0">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Prob</th>
+      <th scope="col">Author</th>
+      <th scope="col">Title</th>
+    </tr>
+  </thead>
+  <tbody>
+
+      <!-->
+      {{ range $idx, $p := .list }}
+    <tr>
+      <th class="text-center" scope="row">{{$p.ID}}</th>
+      <td><a href="/problem?id={{$p.ID}}">{{$p.Title}}</a></td>        need to be changed 
+      <td class="text-center"><a href="/profile?id={{$p.Owner}}">{{$p.OwnerName}}</a></td>
+      <td class="text-center">123</td>
+      <td class="text-center">100</td>
+    </tr>
+    {{ end }}  <-->
+
+
+    
+    <tr>
+      <th scope="row">1</th>
+      <td>1001</td>
+      <td>tiny</td>
+      <td>水题！</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>1002</td>
+      <td>tinytiny</td>
+      <td>还是水题！</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>1003</td>
+      <td>tinytinytiny</td>
+      <td>我太强力！</td>
+    </tr>
+
+  </tbody>
+</table>
+
+</div>
+
+{{ end }}
