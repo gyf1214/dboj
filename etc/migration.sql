@@ -100,7 +100,12 @@ create table `evaluation` (
     unique  key (`submition`, `dataset`)
 );
 
+create view `ac_submition` as select * from `submition` where not exists (
+    select `id` from `evaluation`
+    where `evaluation`.`submition` = `submition`.`id` and `evaluation`.`status` <> 1
+);
+
 create trigger `submit_evaluation` after insert on `submition` for each row
-    insert into `evaluation` (`submition`, `dataset`, `status`)
-    select NEW.`id`, `dataset`.`id`, 0 from `dataset`
+    insert into `evaluation` (`submition`, `dataset`, `status`, `message`)
+    select NEW.`id`, `dataset`.`id`, 0, '' from `dataset`
     where `dataset`.`problem` = NEW.`problem`;

@@ -1,0 +1,27 @@
+{{ define "content" }}
+
+<form class="container pt-5 pb-4 pl-5 pr-5" method="post" action="/submit/create?id={{ .problem.ID }}" enctype="multipart/form-data">
+  <div class="row justify-content-between">
+    <div class="col-auto">
+      <h2>Sumit: {{ .problem.Title }}</h2>
+    </div>
+    <div class="col-auto">
+      <a role="button" href="/problem?id={{ .problem.ID }}" class="mr-2 btn btn-outline-primary">BACK</a>
+      <button type="submit" class="btn btn-outline-primary">SUBMIT</button>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="language">Language</label>
+    <select class="form-control" name="language">
+      {{ range .langs }}
+      <option>{{ . }}</option>
+      {{ end }}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="code" class="bmd-label-floating">Code</label>
+    <textarea class="form-control" name="code" rows="15"></textarea>
+  </div>
+</form>
+
+{{ end }}
