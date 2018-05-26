@@ -11,6 +11,7 @@
       <a role="button" href="/problem/dataset?id={{ .problem.ID }}" class="mr-2 btn btn-outline-primary">UPLOAD</a>
       <a role="button" href="/problem/delete?id={{ .problem.ID }}" class="mr-2 btn btn-outline-danger">DELETE</a>
       {{ end }}
+      <a role="button" href="/discussion?id={{ .problem.ID }}" class="btn btn-outline-primary mr-2">DISCUSSION</a>
       <a role="button" href="/submit/create?id={{ .problem.ID }}" class="btn btn-outline-primary">SUBMIT</a>
     </div>
   </div>

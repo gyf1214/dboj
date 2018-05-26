@@ -91,20 +91,11 @@ func Authenticate(sid string) (int, error) {
 
 // GetUserInfo returns user information
 func GetUserInfo(uid int) (UserInfo, error) {
-	var (
-		ret   UserInfo
-		gid   sql.NullInt64
-		gname sql.NullString
-	)
-	q := "select `user`.`id`, `user`.`name`, `group`.`id`, `group`.`name` from `user` left join `group` on `user`.`group` = `group`.`id` where `user`.`id` = ?;"
-	err := db.QueryRow(q, uid).Scan(&ret.ID, &ret.Name, &gid, &gname)
+	var ret UserInfo
+	q := "select `user`.`id`, `user`.`name`, coalesce(`group`.`id`, 0), coalesce(`group`.`name`, '') from `user` left join `group` on `user`.`group` = `group`.`id` where `user`.`id` = ?;"
+	err := db.QueryRow(q, uid).Scan(&ret.ID, &ret.Name, &ret.Group, &ret.GroupName)
 	if err != nil {
 		return UserInfo{}, err
-	}
-
-	if gid.Valid {
-		ret.Group = int(gid.Int64)
-		ret.GroupName = gname.String
 	}
 	return ret, nil
 }

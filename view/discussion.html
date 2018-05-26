@@ -1,0 +1,62 @@
+{{ define "content" }}
+<div class="container pt-5 pb-4 pl-5 pr-5">
+  <div class="row mb-4 justify-content-between">
+    <div class="col-auto">
+      {{ if eq .problem.ID 0 }}
+      <h2>Discussion</h2>
+      {{ else }}
+      <h2>Discussion: <a href="/problem?id={{.problem.ID}}">{{ .problem.Title }}</a></h2>
+      {{ end }}
+    </div>
+  </div>
+  <table class="table table-striped border-bottom mb-0">
+  <thead>
+    <tr>
+      <th class="text-center" scope="col">#</th>
+      <th scope="col">Title</th>
+      {{ if eq .problem.ID 0 }}
+      <th>Problem</th>
+      {{ end }}
+      <th class="text-center" scope="col">Author</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ $root := . }}
+    {{ range $idx, $p := .list }}
+    <tr>
+      <th class="text-center" scope="row">{{$p.ID}}</th>
+      <td><a href="/post?id={{$p.ID}}">{{$p.Title}}</a></td>
+      {{ if eq $root.problem.ID 0 }}
+      <td><a href="/problem?id={{$p.Problem.ID}}">{{$p.Problem.Title}}</a></td>
+      {{ end }}
+      <td class="text-center"><a href="/profile?id={{$p.User.ID}}">{{$p.User.Name}}</a></td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+<div class="row mb-4 justify-content-center">
+  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+    {{ if ge .page.ll 0 }}
+    <div class="btn-group" role="group">
+      <a role="button" href="?page={{ .page.ll }}" class="btn btn-secondary"><</a>
+    </div>
+    {{ end }}
+    <div class="btn-group ml-2 mr-2" role="group" aria-label="Second group">
+      {{ $page := .page }}
+      {{ range $dummy, $p := $page.pages }}
+        {{ if eq $page.cur $p }}
+        <a role="button" href="?page={{ $p }}" class="btn btn-secondary active">{{ $p }}</a>
+        {{ else }}
+        <a role="button" href="?page={{ $p }}" class="btn btn-secondary">{{ $p }}</a>
+        {{ end }}
+      {{ end }}
+    </div>
+    {{ if ge .page.rr 0 }}
+    <div class="btn-group" role="group">
+      <a role="button" href="?page={{ .page.rr }}" class="btn btn-secondary">></a>
+    </div>
+    {{ end }}
+  </div>
+</div>
+</div>
+{{ end }}

@@ -58,4 +58,6 @@ var (
 	Profile     = parseTemplate("profile.html")
 	Submit      = parseTemplate("submit.html")
 	ShowSubmit  = parseTemplate("show_submit.html")
+	EditPost    = parseTemplate("edit_post.html")
+	Discussion  = parseTemplate("discussion.html")
 )

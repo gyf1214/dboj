@@ -1,8 +1,6 @@
 package model
 
 import (
-	"database/sql"
-
 	"github.com/gyf1214/dboj/util"
 )
 
@@ -64,6 +62,7 @@ func ListSubmit(uid int, pid int, page int) ([]SubmitInfo, error) {
 	}
 
 	ret := []SubmitInfo{}
+	defer rows.Close()
 	for rows.Next() {
 		var now SubmitInfo
 		err := rows.Scan(&now.ID, &now.Problem.ID, &now.Problem.Title, &now.Score, &now.Language)
@@ -84,6 +83,7 @@ func ListLanguage() ([]string, error) {
 	}
 
 	ret := []string{}
+	defer rows.Close()
 	for rows.Next() {
 		var now string
 		err = rows.Scan(&now)
@@ -104,6 +104,7 @@ func ListJudge(language string) ([]JudgeInfo, error) {
 	}
 
 	ret := []JudgeInfo{}
+	defer rows.Close()
 	for rows.Next() {
 		var now JudgeInfo
 		err = rows.Scan(&now.ID, &now.Address)
@@ -116,22 +117,19 @@ func ListJudge(language string) ([]JudgeInfo, error) {
 }
 
 func ListEvalution(submit int) ([]EvaluationInfo, error) {
-	q := "select `evaluation`.`id`, `evaluation`.`status`, `evaluation`.`dataset`, `judge`.`name` from `evaluation` left join `judge` on `evaluation`.`judge` = `judge`.`id` where `evaluation`.`submition` = ?;"
+	q := "select `evaluation`.`id`, `evaluation`.`status`, `evaluation`.`dataset`, coalesce(`judge`.`name`, '') from `evaluation` left join `judge` on `evaluation`.`judge` = `judge`.`id` where `evaluation`.`submition` = ?;"
 	rows, err := db.Query(q, submit)
 	if err != nil {
 		return nil, err
 	}
 
 	ret := []EvaluationInfo{}
+	defer rows.Close()
 	for rows.Next() {
-		var judge sql.NullString
 		var now EvaluationInfo
-		err = rows.Scan(&now.ID, &now.Status, &now.Dataset, &judge)
+		err = rows.Scan(&now.ID, &now.Status, &now.Dataset, &now.Judge.Name)
 		if err != nil {
 			return nil, err
-		}
-		if judge.Valid {
-			now.Judge.Name = judge.String
 		}
 		ret = append(ret, now)
 	}

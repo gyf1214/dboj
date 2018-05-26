@@ -126,6 +126,14 @@ create view `problem_all` as
         left join `submition_all` on `problem`.`id` = `submition_all`.`problem`
     group by `problem`.`id`;
 
+create view `discussion_all` as
+    select `discussion`.`id`, `discussion`.`title`, `discussion`.`content`,
+        `discussion`.`user`, `user`.`name`, `discussion`.`problem`,
+        `problem`.`title` as `problem_title`
+    from `discussion`
+        left join `user` on `discussion`.`user` = `user`.`id`
+        left join `problem` on `discussion`.`problem` = `problem`.`id`;
+
 create trigger `submit_evaluation` after insert on `submition` for each row
     insert into `evaluation` (`submition`, `dataset`, `status`, `message`)
     select NEW.`id`, `dataset`.`id`, 0, '' from `dataset`

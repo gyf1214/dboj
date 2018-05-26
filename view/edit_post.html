@@ -1,0 +1,28 @@
+{{ define "content" }}
+
+<form class="container pt-5 pb-4 pl-5 pr-5" method="post" action="{{ .post }}?id={{ .pid }}" enctype="multipart/form-data">
+  <div class="row justify-content-between">
+    <div class="col-auto">
+      {{ if eq .post "/discussion/create" }}
+      <h2>Post: <a href="/problem?id={{ .problem.ID }}">{{ .problem.Title }}</a></h2>
+      {{ else }}
+      <h2>Post: <a href="/post?id={{ .info.Discussion.ID }}">{{ .info.Discussion.Title }}</a></h2>
+      {{ end }}
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-primary">POST</button>
+    </div>
+  </div>
+  {{ if eq .post "/discussion/create" }}
+  <div class="form-group">
+    <label for="name" class="bmd-label-floating">Title</label>
+    <input type="text" class="form-control" name="title" value="" />
+  </div>
+  {{ end }}
+  <div class="form-group">
+    <label for="content" class="bmd-label-floating">Content</label>
+    <textarea class="form-control" name="content" rows="15"></textarea>
+  </div>
+</form>
+
+{{ end }}
