@@ -5,9 +5,18 @@
       {{ if eq .problem.ID 0 }}
       <h2>Discussion</h2>
       {{ else }}
-      <h2>Discussion: <a href="/problem?id={{.problem.ID}}">{{ .problem.Title }}</a></h2>
+      <h2>
+        Discussion
+        @
+        <a href="/problem?id={{.problem.ID}}">{{ .problem.Title }}</a>
+      </h2>
       {{ end }}
     </div>
+    {{ if ne .problem.ID 0 }}
+    <div class="col-auto">
+      <a role="button" href="/discussion/create?id={{ .problem.ID }}" class="btn btn-outline-primary">POST</a>
+    </div>
+    {{ end }}
   </div>
   <table class="table table-striped border-bottom mb-0">
   <thead>

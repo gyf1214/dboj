@@ -72,3 +72,22 @@ func CreatePost(info PostInfo) (int, error) {
 	id, err := res.LastInsertId()
 	return int(id), err
 }
+
+func ListPost(id int) ([]PostInfo, error) {
+	q := "select `post`.`content`, `post`.`user`, `user`.`name` from `post` left join `user` on `post`.`user` = `user`.`id` where `post`.`discussion` = ?;"
+	rows, err := db.Query(q, id)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := []PostInfo{}
+	for rows.Next() {
+		var now PostInfo
+		err := rows.Scan(&now.Content, &now.User.ID, &now.User.Name)
+		if err != nil {
+			return nil, err
+		}
+		ret = append(ret, now)
+	}
+	return ret, nil
+}

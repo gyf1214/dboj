@@ -67,7 +67,17 @@ func doCreateDiscussion(w http.ResponseWriter, r *http.Request) {
 }
 
 func showPost(w http.ResponseWriter, r *http.Request) {
-	// checkUser(r, 0)
+	var id int
+	checkUser(r, 0)
+	util.Ensure(util.ParseForm(r, "id", &id))
+
+	info, err := model.GetDiscussionInfo(id)
+	util.Ensure(err)
+	list, err := model.ListPost(id)
+	util.Ensure(err)
+
+	data := map[string]interface{}{"list": list, "info": info}
+	util.Ensure(view.Post(w, data))
 }
 
 func createPost(w http.ResponseWriter, r *http.Request) {

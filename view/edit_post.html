@@ -4,9 +4,19 @@
   <div class="row justify-content-between">
     <div class="col-auto">
       {{ if eq .post "/discussion/create" }}
-      <h2>Post: <a href="/problem?id={{ .problem.ID }}">{{ .problem.Title }}</a></h2>
+      <h2>
+        Post
+        @
+        <a href="/discussion?id={{ .problem.ID }}">{{ .problem.Title }}</a>
+      </h2>
       {{ else }}
-      <h2>Post: <a href="/post?id={{ .info.Discussion.ID }}">{{ .info.Discussion.Title }}</a></h2>
+      <h2>
+        Post
+        @
+        <a href="/post?id={{ .info.Discussion.ID }}">{{ .info.Discussion.Title }}</a>
+        @
+        <a href="/discussion?id={{ .info.Discussion.Problem.ID }}">{{ .info.Discussion.Problem.Title }}</a>
+      </h2>
       {{ end }}
     </div>
     <div class="col-auto">

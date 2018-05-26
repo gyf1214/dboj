@@ -1,4 +1,31 @@
 {{ define "content" }}
-
+<div class="container pt-5 pb-5 pl-5 pr-5">
+  <div class="row mb-4 justify-content-between">
+    <div class="col-auto">
+        <h2>
+          <a href="/post?id={{.info.ID}}">{{ .info.Title }}</a>
+          @
+          <a href="/problem?id={{.info.Problem.ID}}">{{ .info.Problem.Title }}</a>
+        </h2>
+    </div>
+    <div class="col-auto">
+      <a role="button" href="/post/create?id={{.info.ID}}" class="btn btn-outline-primary">POST</a>
+    </div>
+  </div>
+  <div class="row mb-2"><div class="col">
+    <h5>@<a href="/profile?id={{.info.User.ID}}">{{.info.User.Name}}</a></h5>
+  </div></div>
+  <div class="row mb-4"><div class="col">
+    <h4><pre>{{.info.Content}}</pre></h4>
+  </div></div>
+  {{ range .list }}
+  <div class="row mb-2"><div class="col">
+    <h5>@<a href="/profile?id={{.User.ID}}">{{.User.Name}}</a></h5>
+  </div></div>
+  <div class="row mb-4"><div class="col">
+    <h4><pre>{{.Content}}</pre></h4>
+  </div></div>
+  {{ end }}
+</div>
 
 {{ end }}
