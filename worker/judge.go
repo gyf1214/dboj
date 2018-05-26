@@ -23,7 +23,7 @@ func runEvaluation(code string, eval model.EvaluationInfo) error {
 
 	time.Sleep(time.Duration(rand.Intn(2000)) * time.Millisecond)
 
-	eval.Status = 1
+	eval.Status = rand.Intn(3) + 1
 	fmt.Println("result: ", eval.Status)
 
 	return model.UpdateEvaluation(eval)
