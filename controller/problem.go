@@ -41,7 +41,7 @@ func doCreateProblem(w http.ResponseWriter, r *http.Request) {
 	pid, err := model.CreateProblem(uid, title, desc)
 	util.Ensure(err)
 
-	redirect(fmt.Sprintf("/problem/edit?id=%v", pid))
+	redirect(fmt.Sprintf("/problem?id=%v", pid))
 }
 
 func updateProblem(w http.ResponseWriter, r *http.Request) {
@@ -107,7 +107,7 @@ func addDataset(w http.ResponseWriter, r *http.Request) {
 	checkUser(r, owner)
 
 	util.Ensure(model.AddDataset(pid, data))
-	redirect(fmt.Sprintf("/problem/edit?id=%v", pid))
+	redirect(fmt.Sprintf("/problem?id=%v", pid))
 }
 
 func deleteDataset(w http.ResponseWriter, r *http.Request) {

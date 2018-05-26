@@ -13,10 +13,11 @@
     <!-- Material Design for Bootstrap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>DBOJ</title>
   </head>
   <body>
 
+  {{ if not .login }}
     <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
       <div class="container pl-5 pr-5">
   <a class="navbar-brand" href="/">DBOJ</a>
@@ -33,9 +34,18 @@
         <a class="nav-link" href="/">Discussion</a>
       </li>
     </ul>
+    <ul class="navbar-nav my-2 my-lg-0">
+      <li class="nav-item">
+        <a class="nav-link" href="/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
   </div>
 </div>
 </nav>
+{{ end }}
 
     {{ template "content" . }}
 

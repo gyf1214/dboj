@@ -55,4 +55,5 @@ var (
 	ShowProblem = parseTemplate("show_problem.html")
 	EditProblem = parseTemplate("edit_problem.html")
 	Dataset     = parseTemplate("dataset.html")
+	Profile     = parseTemplate("profile.html")
 )

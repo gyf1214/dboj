@@ -12,4 +12,5 @@ const (
 	CacheMem      = 32 << 20
 	SidName       = "dboj-session"
 	PageSize      = 20
+	PageDelta     = 3
 )

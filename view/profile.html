@@ -1,0 +1,19 @@
+{{ define "content" }}
+
+<div class="container pt-5 pb-4 pl-5 pr-5">
+  <div class="row mb-4 justify-content-between">
+    <div class="col-auto">
+      <h2>Profile: <a href="/profile?id={{.user.ID}}">{{ .user.Name }}</a>
+        {{ if ne .user.Group 0 }}
+        @
+        <a href="/group?id={{.user.Group}}">{{ .user.GroupName }}</a>
+        {{ end }}
+      </h2>
+    </div>
+    {{ if .self }}
+    <a role="button" href="/problem/create" class="btn btn-outline-primary">CREATE</a>
+    {{ end }}
+  </div>
+</div>
+
+{{ end }}

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gyf1214/dboj/model"
@@ -10,12 +9,12 @@ import (
 )
 
 func login(w http.ResponseWriter, r *http.Request) {
-	data := map[string]string{"title": "Please sign in", "post": "/login"}
+	data := map[string]interface{}{"login": true, "post": "/login"}
 	util.Ensure(view.Login(w, data))
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
-	data := map[string]string{"title": "Register here", "post": "/register"}
+	data := map[string]interface{}{"login": true, "post": "/register"}
 	util.Ensure(view.Login(w, data))
 }
 
@@ -47,16 +46,16 @@ func doLogout(w http.ResponseWriter, r *http.Request) {
 	redirect("/login")
 }
 
-func checkUser(r *http.Request, uid int) int {
-	id, err := model.Authenticate(util.GetSession(r))
+func profile(w http.ResponseWriter, r *http.Request) {
+	mid := checkUser(r, 0)
+	uid := mid
+	util.ParseForm(r, "id", &uid)
+
+	user, err := model.GetUserInfo(uid)
 	util.Ensure(err)
-	if id == 0 {
-		redirect("/login")
-	}
-	if uid != 0 && id != uid {
-		panic(errors.New("forbidden"))
-	}
-	return id
+
+	data := map[string]interface{}{"self": uid == mid, "user": user}
+	util.Ensure(view.Profile(w, data))
 }
 
 func init() {
@@ -65,4 +64,5 @@ func init() {
 	util.SafeHandle("/register", register).Methods("GET")
 	util.SafeHandle("/register", doRegister).Methods("POST")
 	util.SafeHandle("/logout", doLogout)
+	util.SafeHandle("/profile", profile)
 }

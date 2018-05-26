@@ -9,6 +9,8 @@ type ProblemInfo struct {
 	OwnerName string
 	Title     string
 	Desc      string
+	ACRate    int
+	Submits   int
 }
 
 // DatasetInfo stores dataset information
@@ -33,9 +35,18 @@ func CreateProblem(uid int, title, desc string) (int, error) {
 	return int(pid), nil
 }
 
+// CountProblem count problems
+func CountProblem(uid int) (int, error) {
+	var ret int
+	q := "select count(`problem`.`id`) from `problem` where ? = 0 or ? = `problem`.`owner`;"
+
+	err := db.QueryRow(q, uid, uid).Scan(&ret)
+	return ret, err
+}
+
 // ListProblem list problems, only returns id & title
 func ListProblem(page, uid int) ([]ProblemInfo, error) {
-	q := "select `id`, `title` from `problem` where ? = 0 or ? = `owner` order by `id` desc limit ? offset ?;"
+	q := "select `problem`.`id`, `problem`.`title`, `user`.`id`, `user`.`name` from `problem` left join `user` on `problem`.`owner` = `user`.`id` where ? = 0 or ? = `problem`.`owner` order by `problem`.`id` asc limit ? offset ?;"
 	rows, err := db.Query(q, uid, uid, util.PageSize, util.PageSize*page)
 	if err != nil {
 		return nil, err
@@ -45,7 +56,7 @@ func ListProblem(page, uid int) ([]ProblemInfo, error) {
 	defer rows.Close()
 	for rows.Next() {
 		prob := ProblemInfo{}
-		err := rows.Scan(&prob.ID, &prob.Title)
+		err := rows.Scan(&prob.ID, &prob.Title, &prob.Owner, &prob.OwnerName)
 		if err != nil {
 			return nil, err
 		}

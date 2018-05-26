@@ -13,10 +13,10 @@ import (
 
 // UserInfo is user information returned
 type UserInfo struct {
-	ID      int
-	Name    string
-	GroupID int
-	Group   string
+	ID        int
+	Name      string
+	Group     int
+	GroupName string
 }
 
 func random() (string, error) {
@@ -103,8 +103,8 @@ func GetUserInfo(uid int) (UserInfo, error) {
 	}
 
 	if gid.Valid {
-		ret.GroupID = int(gid.Int64)
-		ret.Group = gname.String
+		ret.Group = int(gid.Int64)
+		ret.GroupName = gname.String
 	}
 	return ret, nil
 }

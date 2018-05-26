@@ -12,9 +12,8 @@
     <div class="col-auto">
       {{ if ne .post "/problem/create" }}
       <a role="button" href="/problem?id={{ .problem.ID }}" class="mr-2 btn btn-outline-primary">BACK</a>
-      <a role="button" href="/problem/dataset?id={{ .problem.ID }}" class="mr-2 btn btn-outline-primary">UPLOAD</a>
       {{ else }}
-      <a role="button" href="/" class="mr-2 btn btn-outline-primary">BACK</a>
+      <a role="button" href="/profile" class="mr-2 btn btn-outline-primary">BACK</a>
       {{ end }}
       <button type="submit" class="btn btn-outline-primary">SAVE</button>
     </div>
@@ -25,7 +24,7 @@
   </div>
   <div class="form-group">
     <label for="name" class="bmd-label-floating">Description</label>
-    <textarea class="form-control" name="desc" rows="20">{{ .problem.Desc }}</textarea>
+    <textarea class="form-control" name="desc" rows="15">{{ .problem.Desc }}</textarea>
   </div>
 </form>
 

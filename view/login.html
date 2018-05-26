@@ -8,7 +8,13 @@ form {
 </style>
 
 <form method="post" action="{{ .post }}" enctype="multipart/form-data">
-  <h2 class="text-center">{{ .title }}</h2>
+  <h2 class="text-center">
+    {{ if eq .post "/login" }}
+    DBOJ Login
+    {{ else }}
+    Register Here
+    {{ end }}
+  </h2>
   <div class="form-group">
     <label for="name" class="bmd-label-floating">Name</label>
     <input type="text" class="form-control" name="name" />
