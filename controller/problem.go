@@ -12,15 +12,25 @@ import (
 func showProblem(w http.ResponseWriter, r *http.Request) {
 	var pid int
 	util.Ensure(util.ParseForm(r, "id", &pid))
+	uid := checkUser(r, 0)
 
 	info, err := model.GetProblemInfo(pid)
 	util.Ensure(err)
-	uid := checkUser(r, 0)
+
+	page := 0
+	util.ParseForm(r, "page", &page)
+	count, err := model.CountSubmit(uid, pid)
+	util.Ensure(err)
+	pages := paginize(page, count)
+	list, err := model.ListSubmit(uid, pid, page)
+	util.Ensure(err)
 
 	data := map[string]interface{}{
 		"problem": info,
-		"edit":    uid == info.Owner,
+		"edit":    uid == info.Owner.ID,
 		"pid":     pid,
+		"submits": list,
+		"page":    pages,
 	}
 
 	util.Ensure(view.ShowProblem(w, data))
@@ -50,7 +60,7 @@ func updateProblem(w http.ResponseWriter, r *http.Request) {
 
 	info, err := model.GetProblemInfo(pid)
 	util.Ensure(err)
-	checkUser(r, info.Owner)
+	checkUser(r, info.Owner.ID)
 
 	data := map[string]interface{}{
 		"post":    fmt.Sprintf("/problem/edit?id=%v", pid),

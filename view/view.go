@@ -57,4 +57,5 @@ var (
 	Dataset     = parseTemplate("dataset.html")
 	Profile     = parseTemplate("profile.html")
 	Submit      = parseTemplate("submit.html")
+	ShowSubmit  = parseTemplate("show_submit.html")
 )

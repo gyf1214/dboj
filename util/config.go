@@ -11,6 +11,12 @@ const (
 	RedirectCode  = 302
 	CacheMem      = 32 << 20
 	SidName       = "dboj-session"
-	PageSize      = 20
+	PageSize      = 15
 	PageDelta     = 3
+
+	Pending     = 0
+	Accepted    = 1
+	WrongAnswer = 2
+	TimeLimit   = 3
+	SystemError = 4
 )

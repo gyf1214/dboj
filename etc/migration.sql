@@ -1,3 +1,8 @@
+drop trigger if exists `submit_evaluation`;
+
+drop view if exists `problem_all`;
+drop view if exists `submition_all`;
+
 drop table if exists `evaluation`;
 drop table if exists `dataset`;
 drop table if exists `submition`;
@@ -100,10 +105,26 @@ create table `evaluation` (
     unique  key (`submition`, `dataset`)
 );
 
-create view `ac_submition` as select * from `submition` where not exists (
-    select `id` from `evaluation`
-    where `evaluation`.`submition` = `submition`.`id` and `evaluation`.`status` <> 1
-);
+create view `submition_all` as
+    select `submition`.`id`, `submition`.`problem`, `problem`.`title`,
+        `submition`.`user`, `user`.`name`, `submition`.`code`,
+        `submition`.`language`, sum(`dataset`.`score` * (`evaluation`.`status` = 1)) as `score`,
+        sum(`evaluation`.`status` = 1) = count(`evaluation`.`id`) as `accepted`
+    from `submition`
+        left join `problem` on `submition`.`problem` = `problem`.`id`
+        left join `user` on `submition`.`user` = `user`.`id`
+        left join `evaluation` on `evaluation`.`submition` = `submition`.`id`
+        left join `dataset` on `evaluation`.`dataset` = `dataset`.`id`
+    group by `submition`.`id`;
+
+create view `problem_all` as
+    select `problem`.`id`, `problem`.`owner`, `user`.`name`, `problem`.`title`,
+        `problem`.`description`, count(`submition_all`.`id`) as `submits`,
+        sum(`submition_all`.`accepted`) as `accepts`
+    from `problem`
+        left join `user` on `problem`.`owner` = `user`.`id`
+        left join `submition_all` on `problem`.`id` = `submition_all`.`problem`
+    group by `problem`.`id`;
 
 create trigger `submit_evaluation` after insert on `submition` for each row
     insert into `evaluation` (`submition`, `dataset`, `status`, `message`)

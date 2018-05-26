@@ -7,16 +7,33 @@ import (
 	"github.com/gyf1214/dboj/model"
 	"github.com/gyf1214/dboj/util"
 	"github.com/gyf1214/dboj/view"
+	"github.com/gyf1214/dboj/worker"
 )
 
 func showSubmit(w http.ResponseWriter, r *http.Request) {
+	var id int
+	util.Ensure(util.ParseForm(r, "id", &id))
+	uid := checkUser(r, 0)
+
+	info, err := model.GetSubmitInfo(id)
+	util.Ensure(err)
+	evals, err := model.ListEvalution(id)
+	util.Ensure(err)
+
+	data := map[string]interface{}{
+		"submit": info,
+		"self":   uid == info.User.ID,
+		"evals":  evals,
+	}
+
+	util.Ensure(view.ShowSubmit(w, data))
 }
 
 func createSubmit(w http.ResponseWriter, r *http.Request) {
 	var pid int
 	util.Ensure(util.ParseForm(r, "id", &pid))
-
 	checkUser(r, 0)
+
 	info, err := model.GetProblemInfo(pid)
 	util.Ensure(err)
 
@@ -29,13 +46,15 @@ func createSubmit(w http.ResponseWriter, r *http.Request) {
 
 func doCreateSubmit(w http.ResponseWriter, r *http.Request) {
 	var info model.SubmitInfo
-	util.Ensure(util.ParseForm(r, "id", &info.Problem, "code", &info.Code, "language", &info.Language))
+	util.Ensure(util.ParseForm(r, "id", &info.Problem.ID, "code", &info.Code, "language", &info.Language))
 
-	info.User = checkUser(r, 0)
-	id, err := model.CreateSubmit(info)
+	var err error
+	info.User.ID = checkUser(r, 0)
+	info.ID, err = model.CreateSubmit(info)
 	util.Ensure(err)
 
-	redirect(fmt.Sprintf("/submit?id=%v", id))
+	util.Ensure(worker.RunSubmition(info))
+	redirect(fmt.Sprintf("/submit?id=%v", info.ID))
 }
 
 func init() {

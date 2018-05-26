@@ -14,6 +14,52 @@
     <a role="button" href="/problem/create" class="btn btn-outline-primary">CREATE</a>
     {{ end }}
   </div>
+    <h4>Submition</h4>
+    <table class="table border-bottom mb-0">
+      <thead>
+        <tr>
+          <th class="text-center" scope="col">#</th>
+          <th scope="col">Problem</th>
+          <th class="text-center" scope="col">Language</th>
+          <th class="text-center"  scope="col">Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range $idx, $p := .submits }}
+        <tr>
+          <th class="text-center" scope="row"><a href="/submit?id={{$p.ID}}">{{$p.ID}}</a></th>
+          <th scope="row"><a href="/submit?id={{$p.Problem.ID}}">{{$p.Problem.Title}}</a></th>
+          <td class="text-center">{{$p.Language}}</td>
+          <td class="text-center">{{$p.Score}}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+  </table>
+  <div class="row mb-4 justify-content-center">
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+      {{ if ge .page.ll 0 }}
+      <div class="btn-group" role="group">
+        <a role="button" href="?id={{ .pid }}&page={{ .page.ll }}" class="btn btn-secondary"><</a>
+      </div>
+      {{ end }}
+      <div class="btn-group ml-2 mr-2" role="group" aria-label="Second group">
+        {{ $page := .page }}
+        {{ $root := . }}
+        {{ range $dummy, $p := $page.pages }}
+          {{ if eq $page.cur $p }}
+          <a role="button" href="?id={{ $root.pid }}&page={{ $p }}" class="btn btn-secondary active">{{ $p }}</a>
+          {{ else }}
+          <a role="button" href="?id={{ $root.pid }}&page={{ $p }}" class="btn btn-secondary">{{ $p }}</a>
+          {{ end }}
+        {{ end }}
+      </div>
+      {{ if ge .page.rr 0 }}
+      <div class="btn-group" role="group">
+        <a role="button" href="?id={{ .pid }}&page={{ .page.rr }}" class="btn btn-secondary">></a>
+      </div>
+      {{ end }}
+    </div>
+  </div>
 </div>
 
 {{ end }}

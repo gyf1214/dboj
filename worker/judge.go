@@ -1,14 +1,41 @@
 package worker
 
 import (
+	"fmt"
 	"math/rand"
+	"time"
 
 	"github.com/gyf1214/dboj/model"
+	"github.com/gyf1214/dboj/util"
 )
 
-// fake code
-func RunEvaluation() {
+// fake judge
+func runEvaluation(code string, eval model.EvaluationInfo) error {
+	dataset, err := model.GetDatasetInfo(eval.Dataset)
+	if err != nil {
+		return err
+	}
 
+	fmt.Println("code: ", code)
+	fmt.Println("judge: ", eval.Judge.Address)
+	fmt.Println("input: ", dataset.Input)
+	fmt.Println("answer: ", dataset.Answer)
+
+	time.Sleep(time.Duration(rand.Intn(2000)) * time.Millisecond)
+
+	eval.Status = 1
+	fmt.Println("result: ", eval.Status)
+
+	return model.UpdateEvaluation(eval)
+}
+
+func safeRun(code string, eval model.EvaluationInfo) {
+	err := runEvaluation(code, eval)
+	if err != nil {
+		fmt.Println(err.Error())
+		eval.Status = util.SystemError
+		model.UpdateEvaluation(eval)
+	}
 }
 
 func RunSubmition(submit model.SubmitInfo) error {
@@ -31,6 +58,7 @@ func RunSubmition(submit model.SubmitInfo) error {
 			return err
 		}
 
+		go safeRun(submit.Code, eval)
 	}
 
 	return nil

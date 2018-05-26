@@ -54,7 +54,20 @@ func profile(w http.ResponseWriter, r *http.Request) {
 	user, err := model.GetUserInfo(uid)
 	util.Ensure(err)
 
-	data := map[string]interface{}{"self": uid == mid, "user": user}
+	page := 0
+	util.ParseForm(r, "page", &page)
+	count, err := model.CountSubmit(uid, 0)
+	util.Ensure(err)
+	pages := paginize(page, count)
+	list, err := model.ListSubmit(uid, 0, page)
+	util.Ensure(err)
+
+	data := map[string]interface{}{
+		"self":    uid == mid,
+		"user":    user,
+		"submits": list,
+		"page":    pages,
+	}
 	util.Ensure(view.Profile(w, data))
 }
 

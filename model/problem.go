@@ -4,13 +4,10 @@ import "github.com/gyf1214/dboj/util"
 
 // ProblemInfo stores problem information
 type ProblemInfo struct {
-	ID        int
-	Owner     int
-	OwnerName string
-	Title     string
-	Desc      string
-	ACRate    int
-	Submits   int
+	ID    int
+	Owner UserInfo
+	Title string
+	Desc  string
 }
 
 // DatasetInfo stores dataset information
@@ -56,7 +53,7 @@ func ListProblem(page, uid int) ([]ProblemInfo, error) {
 	defer rows.Close()
 	for rows.Next() {
 		prob := ProblemInfo{}
-		err := rows.Scan(&prob.ID, &prob.Title, &prob.Owner, &prob.OwnerName)
+		err := rows.Scan(&prob.ID, &prob.Title, &prob.Owner.ID, &prob.Owner.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +66,7 @@ func ListProblem(page, uid int) ([]ProblemInfo, error) {
 func GetProblemInfo(pid int) (ProblemInfo, error) {
 	var ret ProblemInfo
 	q := "select `problem`.`id`, `problem`.`title`, `problem`.`description`, `user`.`id`, `user`.`name` from `problem` left join `user` on `problem`.owner = `user`.id where `problem`.`id` = ?;"
-	err := db.QueryRow(q, pid).Scan(&ret.ID, &ret.Title, &ret.Desc, &ret.Owner, &ret.OwnerName)
+	err := db.QueryRow(q, pid).Scan(&ret.ID, &ret.Title, &ret.Desc, &ret.Owner.ID, &ret.Owner.Name)
 	return ret, err
 }
 
@@ -100,4 +97,11 @@ func AddDataset(pid int, data DatasetInfo) error {
 	q := "insert into `dataset` (`problem`, `score`, `input`, `answer`) values (?, ?, ?, ?);"
 	_, err := db.Exec(q, pid, data.Score, data.Input, data.Answer)
 	return err
+}
+
+func GetDatasetInfo(id int) (DatasetInfo, error) {
+	var ret DatasetInfo
+	q := "select `input`, `answer` from `dataset` where `id` = ?;"
+	err := db.QueryRow(q, id).Scan(&ret.Input, &ret.Answer)
+	return ret, err
 }

@@ -1,0 +1,90 @@
+{{ define "content" }}
+<div class="container pt-5 pb-4 pl-5 pr-5">
+  <div class="row mb-4">
+    <div class="col-8 pr-4">
+      <h2>Submition:
+        <a href="/problem?id={{.submit.Problem.ID}}">{{ .submit.Problem.Title }}</a>
+        #
+        {{ .submit.ID }}</h2>
+    </div>
+    {{ if .self }}
+    <div class="col-4 pl-5">
+      <a role="button" href="/submit/create?id={{ .submit.Problem.ID }}" class="btn btn-outline-primary">RESUBMIT</a>
+    </div>
+    {{ end }}
+  </div>
+  <div class="row justify-content-between">
+    <div class="col-8 pr-4">
+      <table class="table table-striped border-bottom mb-0">
+      <thead>
+        <tr>
+          <th class="text-center" scope="col">#</th>
+          <th scope="col">Status</th>
+          <th class="text-center" scope="col">Judge</th>
+          <th class="text-center" scope="col">Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range $idx, $p := .evals }}
+        <tr>
+          <th class="text-center" scope="row">{{$idx}}</th>
+          {{ if eq $p.Status 0 }}
+          <td>Pending</td>
+          {{ else if eq $p.Status 1 }}
+          <td>Accepted</td>
+          {{ else if eq $p.Status 2 }}
+          <td>Wrong Answer</td>
+          {{ else if eq $p.Status 3 }}
+          <td>Time Limit Exceeded</td>
+          {{ else if eq $p.Status 4 }}
+          <td>System Error</td>
+          {{ end }}
+          <td class="text-center">{{$p.Judge.Name}}</td>
+          <td class="text-center">{{$p.Message}}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+    </div>
+    <div class="col-4 pt-4 pd-4 pl-5">
+      <div class="row mb-3">
+        <div class="col-6">
+          <h6>Author:</h6>
+        </div>
+        <div class="col-6">
+           <h6><a href="/profile?id={{ .submit.User.ID }}">{{ .submit.User.Name }}</a></h6>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">
+          <h6>Language:</h6>
+        </div>
+        <div class="col-6">
+           <h6>{{ .submit.Language }}</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <h6>Score:</h6>
+        </div>
+        <div class="col-6">
+           <h6>{{ .submit.Score }}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ if .self }}
+  <div class="row mt-5 mb-3">
+    <div class="col">
+      <h4>Code</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="p-3 bg-light"><pre>{{.submit.Code}}</pre></div>
+    </div>
+  </div>
+  {{ end }}
+
+</div>
+{{ end }}
