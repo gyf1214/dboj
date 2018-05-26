@@ -2,6 +2,7 @@ drop trigger if exists `submit_evaluation`;
 
 drop view if exists `problem_all`;
 drop view if exists `submition_all`;
+drop view if exists `discussion_all`;
 
 drop table if exists `evaluation`;
 drop table if exists `dataset`;
