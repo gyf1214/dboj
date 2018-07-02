@@ -8,7 +8,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/gyf1214/dboj/util"
+	"github.com/zc-staff/dboj/util"
 )
 
 // UserInfo is user information returned

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gyf1214/dboj/model"
-	"github.com/gyf1214/dboj/util"
-	"github.com/gyf1214/dboj/view"
+	"github.com/zc-staff/dboj/model"
+	"github.com/zc-staff/dboj/util"
+	"github.com/zc-staff/dboj/view"
 )
 
 func listDiscussion(w http.ResponseWriter, r *http.Request) {

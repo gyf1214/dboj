@@ -5,8 +5,8 @@ import (
 	"math"
 	"net/http"
 
-	"github.com/gyf1214/dboj/model"
-	"github.com/gyf1214/dboj/util"
+	"github.com/zc-staff/dboj/model"
+	"github.com/zc-staff/dboj/util"
 )
 
 func redirect(url string) {

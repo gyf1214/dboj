@@ -1,6 +1,6 @@
 package model
 
-import "github.com/gyf1214/dboj/util"
+import "github.com/zc-staff/dboj/util"
 
 type DiscussionInfo struct {
 	ID      int

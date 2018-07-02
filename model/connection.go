@@ -5,7 +5,7 @@ import (
 
 	// sql driver
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gyf1214/dboj/util"
+	"github.com/zc-staff/dboj/util"
 )
 
 var db *sql.DB

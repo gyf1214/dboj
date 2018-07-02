@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/gyf1214/dboj/util"
-	"github.com/gyf1214/dboj/view"
+	"github.com/zc-staff/dboj/util"
+	"github.com/zc-staff/dboj/view"
 )
 
 func main() {

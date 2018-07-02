@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/gyf1214/dboj/util"
+	"github.com/zc-staff/dboj/util"
 )
 
 // SubmitInfo stores info of submition

@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"time"
 
-	_ "github.com/gyf1214/dboj/controller"
-	"github.com/gyf1214/dboj/util"
+	_ "github.com/zc-staff/dboj/controller"
+	"github.com/zc-staff/dboj/util"
 )
 
 func main() {
